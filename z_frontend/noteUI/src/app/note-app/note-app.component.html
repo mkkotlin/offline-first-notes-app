@@ -1,0 +1,90 @@
+<!-- Layout -->
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+            </div>
+            <h1 class="logo-title">NotesApp</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 10h16M4 14h16M4 18h16">
+                    </path>
+                </svg>
+                All Notes
+            </button>
+            <button class="nav-btn">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                    </path>
+                </svg>
+                Archived
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- List Panel -->
+        <div class="list-panel">
+            <div class="list-header">
+                <h2 class="list-title">Notes <span class="note-count">{{notes?.length}}</span></h2>
+                <button class="btn-ghost" (click)="newNote()">+ New</button>
+            </div>
+            <div class="notes-list">
+                <div class="note-item" [class.active]="panel && panel.id === list.id" *ngFor="let list of notes"
+                    (click)="eventClick(list.id)">
+                    <div class="note-item-meta">
+                        <span class="note-item-title">{{list.title}}</span>
+                        <span class="note-item-date">{{getDaysAgo(list.created_at)}}</span>
+                    </div>
+                    <p class="note-item-preview">{{list.content}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Panel -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <svg [ngClass]="{'green-color': isOnline, 'red-color': !isOnline}" class="icon" fill="none"
+                    viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor"
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547a3.374 3.374 0 00-4.961 0l-.549-.547z">
+                    </path>
+                </svg>
+                <span class="status-badge" [ngClass]="{'status-online': isOnline, 'status-offline': !isOnline}">
+                    {{ isOnline ? 'Online' : 'Offline' }}
+                </span>
+                <!-- Pending sync badge -->
+                <span class="pending-badge" *ngIf="pendingCount > 0" title="Changes waiting to sync">
+                    {{ isSyncing ? '⟳ Syncing…' : ('⬆ ' + pendingCount + ' pending') }}
+                </span>
+                <span class="editor-meta">{{panel ? getDaysAgo(panel.updated_at) : 'No note selected'}}</span>
+                <span class="save-success" *ngIf="saveSuccess">✓ Saved</span>
+                <button class="btn-ghost" style="color:#ef4444" *ngIf="panel" id="btn-delete-note"
+                    (click)="deleteNote()">Delete</button>
+                <button class="btn-ghost" style="color:#6366f1;font-weight:600" id="btn-save-note" (click)="saveNote()"
+                    [disabled]="isSaving">
+                    {{isSaving ? 'Saving…' : (panel ? 'Update' : 'Save')}}
+                </button>
+            </div>
+            <div class="editor-content">
+                <input class="note-title-input" placeholder="Title" [(ngModel)]="editorTitle">
+                <textarea class="note-body-textarea" placeholder="Start writing your note…"
+                    [(ngModel)]="editorContent"></textarea>
+            </div>
+        </div>
+
+    </div>
+</div>
