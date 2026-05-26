@@ -22,7 +22,7 @@
                 </svg>
                 All Notes
             </button>
-            <button class="nav-btn">
+            <button class="nav-btn" routerLink="/archives" id="btn-archive-page">
                 <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
@@ -39,7 +39,7 @@
         <!-- List Panel -->
         <div class="list-panel">
             <div class="list-header">
-                <h2 class="list-title">Notes <span class="note-count">{{notes?.length}}</span></h2>
+                <h2 class="list-title">Notes <span class="note-count">{{notes.length}}</span></h2>
                 <button class="btn-ghost" (click)="newNote()">+ New</button>
             </div>
             <div class="notes-list">
@@ -48,6 +48,8 @@
                     <div class="note-item-meta">
                         <span class="note-item-title">{{list.title}}</span>
                         <span class="note-item-date">{{getDaysAgo(list.created_at)}}</span>
+                        <button class="note-item-archive" (click)="archiveNote(list.id, $event)">Archive</button>
+                        <button class="note-item-delete" (click)="deleteNoteById(list.id, $event)">Delete</button>
                     </div>
                     <p class="note-item-preview">{{list.content}}</p>
                 </div>

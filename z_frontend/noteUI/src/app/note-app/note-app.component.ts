@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy, HostListener, NgZone, ChangeDetectorRef }
 import { ServiceService } from '../services/service.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-note-app',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './note-app.component.html',
   styleUrl: './note-app.component.css'
 })
@@ -169,13 +170,60 @@ export class NoteAppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Delete the currently open note */
+  /** Delete the currently open note (from editor panel) */
   async deleteNote(): Promise<void> {
     if (!this.panel) return;
     await this.api.deleteNote(this.panel.id);
     this.panel = null;
     this.editorTitle = '';
     this.editorContent = '';
+    await this.loadNotes();
+    await this.refreshPendingCount();
+  }
+
+  /** Delete a note directly from the list (by id) */
+  async deleteNoteById(id: number, event: Event): Promise<void> {
+    event.stopPropagation();
+    await this.api.deleteNote(id);
+    if (this.panel?.id === id) {
+      this.panel = null;
+      this.editorTitle = '';
+      this.editorContent = '';
+    }
+    await this.loadNotes();
+    await this.refreshPendingCount();
+  }
+
+  /** Archive a note from the list */
+  async archiveNote(id: number, event: Event): Promise<void> {
+    event.stopPropagation();
+    await this.api.archiveNote(id);
+    if (this.panel?.id === id) {
+      this.panel = null;
+      this.editorTitle = '';
+      this.editorContent = '';
+    }
+    await this.loadNotes();
+    await this.refreshPendingCount();
+  }
+
+  // unarchive note
+  async unarchiveNote(id: number): Promise<void> {
+    await this.api.unarchiveNote(id);
+    await this.loadNotes();
+    await this.refreshPendingCount();
+  }
+
+  // delete archive note
+  async deleteArchiveNote(id: number): Promise<void> {
+    await this.api.deleteArchiveNote(id);
+    await this.loadNotes();
+    await this.refreshPendingCount();
+  }
+
+  // delete all archive notes
+  async deleteAllArchiveNote(): Promise<void> {
+    await this.api.deleteAllArchiveNote();
     await this.loadNotes();
     await this.refreshPendingCount();
   }

@@ -165,4 +165,36 @@ export class ServiceService {
   async getPendingCount(): Promise<number> {
     return db.pendingOps.count();
   }
+
+  // ── Archive ───────────────────────────────────────────────────────────────
+
+  async getArchivedNotes(): Promise<any[]> {
+    return firstValueFrom(
+      this.http.get<any[]>(`${this.baseUrl}/archive/`)
+    );
+  }
+
+  async archiveNote(noteId: number): Promise<void> {
+    await firstValueFrom(
+      this.http.post(`${this.baseUrl}/archive/${noteId}/`, {})
+    );
+  }
+
+  async unarchiveNote(noteId: number): Promise<void> {
+    await firstValueFrom(
+      this.http.delete(`${this.baseUrl}/archive/${noteId}/unarchive/`)
+    );
+  }
+
+  async deleteArchiveNote(noteId: number): Promise<void> {
+    await firstValueFrom(
+      this.http.delete(`${this.baseUrl}/archive/${noteId}/delete/`)
+    );
+  }
+
+  async deleteAllArchiveNote(): Promise<void> {
+    await firstValueFrom(
+      this.http.delete(`${this.baseUrl}/archive/delete-all/`)
+    );
+  }
 }

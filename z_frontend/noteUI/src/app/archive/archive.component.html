@@ -1,0 +1,97 @@
+<!-- Archive Page Layout -->
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-icon">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                </svg>
+            </div>
+            <h1 class="logo-title">NotesApp</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn" routerLink="/notes">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 10h16M4 14h16M4 18h16">
+                    </path>
+                </svg>
+                All Notes
+            </button>
+            <button class="nav-btn active">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                    </path>
+                </svg>
+                Archived
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="archive-main">
+        <div class="archive-header">
+            <div class="archive-header-left">
+                <h2 class="archive-title">
+                    Archived Notes
+                    <span class="note-count">{{ archivedNotes.length }}</span>
+                </h2>
+                <p class="archive-subtitle">Notes archived here won't appear in your main list.</p>
+            </div>
+            <button class="btn-danger" (click)="deleteAll()" [disabled]="isDeleting || archivedNotes.length === 0"
+                id="btn-delete-all">
+                {{ isDeleting ? 'Deleting…' : 'Delete All' }}
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-state" *ngIf="isLoading">
+            <div class="spinner"></div>
+            <span>Loading archives…</span>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="!isLoading && archivedNotes.length === 0">
+            <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                </path>
+            </svg>
+            <p class="empty-title">No archived notes</p>
+            <p class="empty-subtitle">Notes you archive will appear here.</p>
+        </div>
+
+        <!-- Archive Grid -->
+        <div class="archive-grid" *ngIf="!isLoading && archivedNotes.length > 0">
+            <div class="archive-card" *ngFor="let note of archivedNotes">
+                <div class="card-header">
+                    <h3 class="card-title">{{ note.title || 'Untitled' }}</h3>
+                    <span class="card-date">{{ getDaysAgo(note.created_at) }}</span>
+                </div>
+                <p class="card-preview">{{ note.content }}</p>
+                <div class="card-actions">
+                    <button class="btn-unarchive" (click)="unarchive(note.id)" id="btn-unarchive-{{note.id}}">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                        </svg>
+                        Restore
+                    </button>
+                    <button class="btn-delete-one" (click)="deleteOne(note.id)" id="btn-delete-{{note.id}}">
+                        <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                            </path>
+                        </svg>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
