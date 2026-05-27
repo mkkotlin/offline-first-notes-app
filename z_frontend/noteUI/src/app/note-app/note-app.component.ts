@@ -152,7 +152,7 @@ export class NoteAppComponent implements OnInit, OnDestroy {
 
   /** Save current editor state — create if new, update if existing */
   async saveNote(): Promise<void> {
-    if (!this.editorTitle.trim()) return;
+    if (!this.editorTitle.trim()) return; //to check title is empty
     this.isSaving = true;
 
     try {
